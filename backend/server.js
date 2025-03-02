@@ -18,8 +18,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const pool = require("./config/db");
 
 // Import API routes
-// const userRouter = require("./routes/userRoute");
-// app.use("/users", userRouter);
 const accRouter = require("./routes/accountsRoute");
 app.use("/accounts", accRouter);
 
