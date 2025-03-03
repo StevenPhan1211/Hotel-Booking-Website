@@ -3,7 +3,6 @@ const bcrypt = require("bcrypt");
 
 const VALID_ROLES = ["Admin", "Staff", "User"];
 
-// Chi co folder model moi thuc hien query tu csdl mysql
 const getAll = async () => {
   const query = "SELECT * FROM accounts";
   const [rows] = await pool.execute(query);
@@ -26,15 +25,42 @@ const create = async (newAccount) => {
   }
 };
 
-
 const checkAccount = async (username) => {
   const query = "SELECT * FROM accounts WHERE USERNAME = ?";
   const [rows, fields] = await pool.execute(query, [username]);
   return rows;
 };
 
-module.exports = {
-    getAll,
-    create,
-    checkAccount,
+const update = async (accountid, passwordharsh) => {
+  if (!passwordharsh) {
+    throw new Error("Password is required");
+  }
+  // băm mật khẩu
+  const harshedPassword = await bcrypt.hash(passwordharsh, 10);
+
+  const [result] = await pool.execute(
+    "UPDATE accounts SET PASSWORDHASH = ? WHERE ACCOUNTID = ?",
+    [harshedPassword, accountid]
+  );
+  return result;
+};
+
+const deleteAccount = async (accountid) => {
+  if (!accountid) {
+    throw new Error("Account ID is required");
+  }
+  
+  const [result] = await pool.execute(
+    "DELETE FROM accounts WHERE ACCOUNTID = ?",
+    [accountid]
+  );
+  return result;
 }
+
+module.exports = {
+  getAll,
+  create,
+  checkAccount,
+  update,
+  deleteAccount,
+};

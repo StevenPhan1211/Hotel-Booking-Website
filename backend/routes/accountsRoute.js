@@ -6,6 +6,13 @@ const accountController = require("../controllers/AccountController");
 // GET localhost:3000/users
 router.get("/", accountController.getAllAccounts);
 
-router.post("/create", accountController.createAccount); 
+// POST 
+router.post("/create", accountController.createAccount);
+
+//PUT
+router.put("/update", accountController.updateAccount);
+
+// DELETE
+router.delete("/delete/:id", accountController.deleteAccounts);
 
 module.exports = router;
