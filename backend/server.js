@@ -19,7 +19,17 @@ const pool = require("./config/db");
 
 // Import API routes
 const accRouter = require("./routes/accountsRoute");
+const hotelsRouter = require("./routes/hotelsRoute");
+const roomRouter = require("./routes/roomsRoute");
+const roomTypesRouter = require("./routes/roomTypesRoute");
+
+
+// Sử dụng API routes
 app.use("/accounts", accRouter);
+app.use("/hotels", hotelsRouter);
+app.use("/rooms", roomRouter);
+app.use("/roomtypes", roomTypesRouter);
+
 
 // Middleware xử lý lỗi 404
 app.use((req, res, next) => {
@@ -30,36 +40,3 @@ app.use((req, res, next) => {
 app.listen(PORT, () => {
   console.log(`App listening at: http://localhost:${PORT}`);
 });
-
-// const express = require("express");
-// const bodyParser = require("body-parser");
-// const path = require("path");
-// const cors = require("cors");
-// const dotenv = require("dotenv");
-// dotenv.config();
-// const port = 3000 || process.env.PORT;
-// const app = express();
-// app.use(cors());
-// const morgan = require("morgan");
-// app.use(morgan("combined"));
-// app.use(bodyParser.urlencoded({ extended: true }));
-// app.use(bodyParser.json());
-
-// app.use(express.static(path.join(__dirname, "public")));
-// //CODE HERE
-// const userRouter = require("./src/routes/userRoute"); // Tạo hàm userRouter để gọi router từ file userRoute.js
-// app.use("/users", userRouter); // Gắn tất cả các route đường dẫn đc định nghĩa trong file userRoute.js vào đường dẫn /users
-
-// app.get("/", (req, res) => {
-//   res.render("index"); //{user: {name: 'admin', email: 'hello'}});
-// });
-
-// // Middleware xử lý lỗi 404: Khi không có route nào khớp
-// app.use((req, res, next) => {
-//   console.log("404 middleware hit");
-//   res.status(404).render("error404");
-// });
-
-// app.listen(port, () => {
-//   console.log(`App listening at http://localhost:${port}`);
-// });
