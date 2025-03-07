@@ -4,7 +4,7 @@ services:
   mysql:
     image: mysql:8.0
     container_name: mysql_db
-    restart: always
+    restart: no
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword
       MYSQL_DATABASE: hotel_booking
@@ -20,7 +20,7 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     container_name: backend_service
-    restart: always
+    restart: no
     ports:
       - "5000:5000"
     depends_on:
@@ -36,7 +36,7 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: frontend_service
-    restart: always
+    restart: no
     ports:
       - "3000:3000"
     depends_on:
