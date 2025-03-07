@@ -31,16 +31,16 @@ const checkAccount = async (username) => {
   return rows;
 };
 
-const update = async (accountid, passwordharsh) => {
-  if (!passwordharsh) {
+const update = async (accountid, passwordhash) => {
+  if (!passwordhash) {
     throw new Error("Password is required");
   }
   // băm mật khẩu
-  const harshedPassword = await bcrypt.hash(passwordharsh, 10);
+  const hashedPassword = await bcrypt.hash(passwordhash, 10);
 
   const [result] = await pool.execute(
     "UPDATE accounts SET PASSWORDHASH = ? WHERE ACCOUNTID = ?",
-    [harshedPassword, accountid]
+    [hashedPassword, accountid]
   );
   return result;
 };
