@@ -1,5 +1,6 @@
 const Account = require("../models/accountModel");
 const bcrypt = require("bcrypt");
+const auth = require("../config/auth");
 
 class AccountController {
   async getAllAccounts(req, res) {
@@ -27,29 +28,72 @@ class AccountController {
     }
   }
 
-  async updateAccount(req, res) {
+  async login(req, res) {
     try {
-      const { accountid, password } = req.body;
+      const { username, password } = req.body;
+      const user = await Account.getByUsername(username);
 
-      // 1. Kiểm tra dữ liệu đầu vào
-      if (!accountid || !password) {
+      if (!user) {
         return res
-          .status(400)
-          .json({ message: "Account ID and password are required." });
+          .status(401)
+          .json({ error: "Username or password is incorrect" });
       }
 
-      // 2. Cập nhật mật khẩu
-      const result = await Account.update(accountid, password);
+      const isMatch = await bcrypt.compare(password, user.PasswordHash);
 
-      // 3. Kiểm tra kết quả cập nhật
+      if (!isMatch) {
+        return res
+          .status(401)
+          .json({ error: "Username or password is incorrect" });
+      }
+
+      // Đăng nhập thành công
+      const currentUser = {
+        username: user.Username,
+        role: user.Role,
+      };
+
+      const accessToken = auth.generateAccessToken(currentUser);
+      res.cookie("accessToken", accessToken, { httpOnly: true });
+
+      res.status(200).json({ message: "Login successfully", accessToken });
+    } catch (error) {
+      console.error("Login error:", error);
+      res.status(500).json({ error: "Server error" });
+    }
+  }
+
+  async updateAccount(req, res) {
+    try {
+      const { id } = req.params; // Lấy accountid từ URL
+      const { username, password, role } = req.body; // Lấy dữ liệu từ body
+
+      // Kiểm tra nếu accountid không tồn tại
+      if (!id) {
+        return res.status(400).json({ message: "Account ID is required." });
+      }
+
+      // Kiểm tra xem có tài khoản với ID này không
+      const account = await Account.getById(id);
+      if (!account) {
+        return res.status(404).json({ message: "Account not found." });
+      }
+
+      // Kiểm tra nếu password tồn tại thì băm mật khẩu
+      let hashedPassword = account.PASSWORDHASH; // Mặc định giữ nguyên password cũ
+      if (password) {
+        hashedPassword = await bcrypt.hash(password, 10);
+      }
+
+      // Cập nhật thông tin
+      const result = await Account.update(id, username, hashedPassword, role);
+
       if (result.affectedRows > 0) {
         return res
           .status(200)
-          .json({ message: "Password updated successfully!" });
+          .json({ message: "Account updated successfully!" });
       } else {
-        return res
-          .status(404)
-          .json({ message: "Account not found or no changes made." });
+        return res.status(400).json({ message: "No changes were made." });
       }
     } catch (error) {
       return res

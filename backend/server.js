@@ -3,6 +3,8 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
+const auth = require("./config/auth");
 
 dotenv.config();
 const app = express();
@@ -13,6 +15,7 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(morgan("combined"));
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 // Kết nối database
 const pool = require("./config/db");
@@ -29,6 +32,17 @@ const reviewsRouter = require("./routes/reviewsRoute");
 const roomImagesRouter = require("./routes/roomImagesRoute");
 const roomRouter = require("./routes/roomsRoute");
 const roomTypesRouter = require("./routes/roomTypesRoute");
+const usersRouter = require("./routes/usersRoute")
+
+// JWT
+app.use(function (req, res, next) {
+  const token = req.cookies.accessToken;
+  if (token) {
+    const user = auth.verifyToken(token);
+    res.locals.user = user;
+  }
+  next();
+});
 
 
 // Sử dụng API routes
@@ -43,11 +57,12 @@ app.use("/reviews", reviewsRouter);
 app.use("/roomimages", roomImagesRouter);
 app.use("/rooms", roomRouter);
 app.use("/roomtypes", roomTypesRouter);
+app.use("/users", usersRouter);
 
 
 // Middleware xử lý lỗi 404
 app.use((req, res, next) => {
-  res.status(404).json({ error: "Không tìm thấy API!" });
+  res.status(404).json({ error: "API not found!" });
 });
 
 // Chạy server backend

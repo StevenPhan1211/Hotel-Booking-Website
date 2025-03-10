@@ -7,7 +7,7 @@ class RoomController {
       const rooms = await Room.getAll();
       res.status(200).json(rooms);
     } catch (error) {
-      res.status(500).json({ message: "Lỗi khi lấy danh sách phòng!" });
+      res.status(500).json({ message: "Error when getting room's list!" });
     }
   }
 
@@ -17,11 +17,11 @@ class RoomController {
       const { id } = req.params;
       const room = await Room.getById(id);
       if (!room) {
-        return res.status(404).json({ message: "Phòng không tồn tại!" });
+        return res.status(404).json({ message: "Room doesn't exist!" });
       }
       res.status(200).json(room);
     } catch (error) {
-      res.status(500).json({ message: "Lỗi khi lấy thông tin phòng!" });
+      res.status(500).json({ message: "Error when getting room's information!" });
     }
   }
 
@@ -41,7 +41,7 @@ class RoomController {
       // Chuyển đổi về số nguyên hoặc số thực
       const price = parseFloat(PricePerNight);
       if (isNaN(price) || price <= 0 || price > 99999999.99) {
-        return res.status(400).json({ message: "Giá phòng không hợp lệ!" });
+        return res.status(400).json({ message: "Invalid price!" });
       }
 
       const newRoomId = await Room.create({
@@ -56,12 +56,12 @@ class RoomController {
 
       res
         .status(201)
-        .json({ message: "Thêm phòng thành công!", RoomID: newRoomId });
+        .json({ message: "Added room successfully!", RoomID: newRoomId });
     } catch (error) {
-      console.error("Lỗi khi thêm phòng:", error);
+      console.error("Added room error:", error);
       res
         .status(500)
-        .json({ message: "Lỗi khi thêm phòng!", error: error.message });
+        .json({ message: "Added room error occurred!", error: error.message });
     }
   }
 
@@ -80,18 +80,18 @@ class RoomController {
       } = req.body;
 
       if (!id) {
-        return res.status(400).json({ message: "Thiếu ID phòng để cập nhật!" });
+        return res.status(400).json({ message: "Missing ID for update!" });
       }
 
       const existingRoom = await Room.getById(id);
       if (!existingRoom) {
-        return res.status(404).json({ message: "Phòng không tồn tại!" });
+        return res.status(404).json({ message: "Room doesn't exist!" });
       }
 
       // Chuyển đổi kiểu dữ liệu cho đúng
       const price = parseFloat(PricePerNight);
       if (isNaN(price) || price <= 0 || price > 99999999.99) {
-        return res.status(400).json({ message: "Giá phòng không hợp lệ!" });
+        return res.status(400).json({ message: "Invalid price!" });
       }
 
       await Room.update(id, {
@@ -104,11 +104,11 @@ class RoomController {
         IsAvailable: parseInt(IsAvailable),
       });
 
-      res.status(200).json({ message: "Cập nhật phòng thành công!" });
+      res.status(200).json({ message: "Updated room successfully!" });
     } catch (error) {
       res
         .status(500)
-        .json({ message: "Lỗi khi cập nhật phòng!", error: error.message });
+        .json({ message: "Error when updating room!", error: error.message });
     }
   }
 
@@ -119,13 +119,13 @@ class RoomController {
 
       const existingRoom = await Room.getById(id);
       if (!existingRoom) {
-        return res.status(404).json({ message: "Phòng không tồn tại!" });
+        return res.status(404).json({ message: "Room doesn't exist!" });
       }
 
       await Room.remove(id);
-      res.status(200).json({ message: "Xóa phòng thành công!" });
+      res.status(200).json({ message: "Delete room successfully!" });
     } catch (error) {
-      res.status(500).json({ message: "Lỗi khi xóa phòng!" });
+      res.status(500).json({ message: "Error when deleting a room!" });
     }
   }
 }
