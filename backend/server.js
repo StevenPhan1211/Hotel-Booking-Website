@@ -26,6 +26,7 @@ const customerRouter = require("./routes/customersRoute");
 const hotelsRouter = require("./routes/hotelsRoute");
 const paymentsRouter = require("./routes/paymentsRoute");
 const reviewsRouter = require("./routes/reviewsRoute");
+const roomImagesRouter = require("./routes/roomImagesRoute");
 const roomRouter = require("./routes/roomsRoute");
 const roomTypesRouter = require("./routes/roomTypesRoute");
 
@@ -39,6 +40,7 @@ app.use("/customers", customerRouter);
 app.use("/hotels", hotelsRouter);
 app.use("/payments", paymentsRouter);
 app.use("/reviews", reviewsRouter);
+app.use("/roomimages", roomImagesRouter);
 app.use("/rooms", roomRouter);
 app.use("/roomtypes", roomTypesRouter);
 
