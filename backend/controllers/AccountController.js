@@ -53,6 +53,8 @@ class AccountController {
         role: user.Role,
       };
 
+      await Account.lastLogin(username);
+
       const accessToken = auth.generateAccessToken(currentUser);
       res.cookie("accessToken", accessToken, { httpOnly: true });
 

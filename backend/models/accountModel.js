@@ -1,5 +1,6 @@
 const pool = require("../config/db");
 const bcrypt = require("bcrypt");
+const {QUERY} = require("./querydb");
 
 const VALID_ROLES = ["Admin", "Staff", "Customer"];
 
@@ -103,6 +104,14 @@ const deleteAccount = async (accountid) => {
   return result;
 }
 
+const lastLogin = async (name) => {
+  try {
+    await pool.execute(QUERY.LASTLOGIN, [name]);
+  } catch (error) {
+    throw error;
+  }
+};
+
 module.exports = {
   getAll,
   getById,
@@ -111,4 +120,5 @@ module.exports = {
   checkAccount,
   update,
   deleteAccount,
+  lastLogin,
 };
