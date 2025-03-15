@@ -1,5 +1,5 @@
 import "../styles/globals.css";
-import Footer, { Component, Endpage } from "./components/footer";
+import { Endpage } from "./components/footer";
 import Header from "./components/header";
 import { ThemeModeScript } from "flowbite-react"; // Đảm bảo đường dẫn đúng
 
